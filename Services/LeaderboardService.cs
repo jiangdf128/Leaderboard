@@ -1,76 +1,51 @@
-
+using Leaderboard.Models;
 using LeaderboardService.Models;
+using System.Collections.Generic;
+using System.Linq;
+
 namespace LeaderboardService.Services
 {
     public class LeaderboardService
     {
-        private List<Customer> _leaderboardList;
-
-        private readonly Lock _lock = new();
+        private LeaderboardHashDoubleLinkList _linkList;
 
         public LeaderboardService()
         {
-            _leaderboardList = [];
+            this._linkList = new LeaderboardHashDoubleLinkList();
+
+            //添加测试数据
+
+            this._linkList.UpdateScore(53274324, 95);
+            this._linkList.UpdateScore(6144320, 93);
+
+            this._linkList.UpdateScore(15514665, 124);
+
+            this._linkList.UpdateScore(76786448, 100);
+            this._linkList.UpdateScore(254814111, 96);
+
+            this._linkList.UpdateScore(8009471, 93);
+            this._linkList.UpdateScore(38819, 92);
+
+            this._linkList.UpdateScore(81546541, 113);
+            this._linkList.UpdateScore(1745431, 100);
+
+            this._linkList.UpdateScore(11028481, 93);
         }
 
         public decimal UpdateScore(long customerId, decimal scoreChange)
         {
-            lock (_lock)
-            {
-                var customer = _leaderboardList.FirstOrDefault(c => c.CustomerID == customerId);
-
-                if (customer == null)
-                {
-                    // Add new customer if not found
-                    customer = new Customer { CustomerID = customerId, Score = scoreChange, Rank = 0 };
-                    _leaderboardList.Add(customer);
-                }
-                else
-                {
-                    // Update existing customer's score
-                    customer.Score += scoreChange;
-                }
-
-                // Recalculate ranks after score change
-                _leaderboardList = _leaderboardList.OrderByDescending(c => c.Score).ThenBy(c => c.CustomerID).ToList();
-                for (int i = 0; i < _leaderboardList.Count; i++)
-                {
-                    _leaderboardList[i].Rank = i + 1;
-                }
-
-                return customer.Score;
-            }
+            return this._linkList.UpdateScore(customerId, scoreChange);
         }
 
         public List<Customer> GetCustomersByRank(int start, int end)
         {
-            lock (_lock)
-            {
-                return _leaderboardList.Where(c => c.Rank >= start && c.Rank <= end).ToList();
-            }
+            return this._linkList.GetCustomersByRank(start, end);
+
         }
 
         public List<Customer> GetCustomerWithNeighbors(long customerId, int high, int low)
         {
-            lock (_lock)
-            {
-                var customer = _leaderboardList.FirstOrDefault(c => c.CustomerID == customerId);
-
-                if (customer == null)
-                {
-                    return new List<Customer>(); // Customer not found
-                }
-
-                var rank = customer.Rank;
-
-                var neighbors = _leaderboardList
-                    .Where(c => c.Rank >= rank - high && c.Rank <= rank + low)
-                    .OrderBy(c => c.Rank)
-                    .ToList();
-
-                return neighbors;
-            }
+            return this._linkList.GetCustomerWithNeighbors(customerId, high, low);
         }
     }
-
 }

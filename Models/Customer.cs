@@ -7,5 +7,6 @@ namespace LeaderboardService.Models
         public long CustomerID { get; set; }
         public decimal Score { get; set; }
         public int Rank { get; set; }
+
     }
 }

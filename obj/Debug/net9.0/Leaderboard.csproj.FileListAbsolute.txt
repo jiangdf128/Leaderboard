@@ -35,3 +35,4 @@
 /Users/caror/data/dotnet/LeaderboardService/bin/Debug/net9.0/Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
 /Users/caror/data/dotnet/LeaderboardService/bin/Debug/net9.0/Newtonsoft.Json.dll
 /Users/caror/data/dotnet/LeaderboardService/bin/Debug/net9.0/Newtonsoft.Json.Bson.dll
+/Users/caror/data/dotnet/LeaderboardService/obj/Debug/net9.0/Leaderboard.sourcelink.json
